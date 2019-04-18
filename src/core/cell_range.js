@@ -1,11 +1,13 @@
 import { xy2expr, expr2xy } from './alphabet';
 
 class CellRange {
-  constructor(sri, sci, eri, eci) {
+  constructor(sri, sci, eri, eci, w = 0, h = 0) {
     this.sri = sri;
     this.sci = sci;
     this.eri = eri;
     this.eci = eci;
+    this.w = w;
+    this.h = h;
   }
 
   set(sri, sci, eri, eci) {
@@ -24,7 +26,7 @@ class CellRange {
   includes(...args) {
     let [ri, ci] = [0, 0];
     if (args.length === 1) {
-      [ri, ci] = expr2xy(args[0]);
+      [ci, ri] = expr2xy(args[0]);
     } else if (args.length === 2) {
       [ri, ci] = args;
     }
@@ -43,6 +45,13 @@ class CellRange {
         cb(i, j);
       }
     }
+  }
+
+  contains(other) {
+    return this.sri <= other.sri
+      && this.sci <= other.sci
+      && this.eri >= other.eri
+      && this.eci >= other.eci;
   }
 
   // within
@@ -174,9 +183,18 @@ class CellRange {
     return ref;
   }
 
+  clone() {
+    const {
+      sri, sci, eri, eci, w, h,
+    } = this;
+    return new CellRange(sri, sci, eri, eci, w, h);
+  }
+
+  /*
   toJSON() {
     return this.toString();
   }
+  */
 
   equals(other) {
     return this.eri === other.eri

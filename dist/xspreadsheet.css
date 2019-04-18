@@ -568,37 +568,81 @@ body {
   color: #f04134;
   font-size: 0.9em;
 }
-.x-spreadsheet-modal {
-  font-size: 1em;
+.x-spreadsheet-dimmer {
+  display: none;
+  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  transition: background-color 0.5s linear;
+  user-select: none;
+  z-index: 1000;
+}
+.x-spreadsheet-dimmer.active {
+  display: block;
+  opacity: 1;
+}
+.x-spreadsheet-modal,
+.x-spreadsheet-toast {
+  font-size: 13px;
   position: fixed;
   z-index: 1001;
   text-align: left;
-  background: #fff;
-  color: rgba(0, 0, 0, 0.65);
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px;
   line-height: 1.25em;
+  min-width: 360px;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  background-clip: padding-box;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px;
 }
-.x-spreadsheet-modal .x-spreadsheet-modal-header {
-  padding: 10px 12px;
-  font-size: 1.1em;
-  border-bottom: 1px solid #e0e2e4;
-  border-radius: 4 4 0 0;
-  background: rgba(0, 0, 0, 0.08);
+.x-spreadsheet-toast {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+.x-spreadsheet-modal-header,
+.x-spreadsheet-toast-header {
   font-weight: 600;
+  background-clip: padding-box;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 4px 4px 0 0;
 }
-.x-spreadsheet-modal .x-spreadsheet-modal-header .x-spreadsheet-icon {
+.x-spreadsheet-modal-header .x-spreadsheet-icon,
+.x-spreadsheet-toast-header .x-spreadsheet-icon {
   position: absolute;
-  right: 10px;
-  top: 8px;
+  right: 0.8em;
+  top: 0.65em;
   border-radius: 18px;
 }
-.x-spreadsheet-modal .x-spreadsheet-modal-header .x-spreadsheet-icon:hover {
+.x-spreadsheet-modal-header .x-spreadsheet-icon:hover,
+.x-spreadsheet-toast-header .x-spreadsheet-icon:hover {
   opacity: 1;
   background: rgba(0, 0, 0, 0.08);
 }
-.x-spreadsheet-modal .x-spreadsheet-modal-content {
-  border-radius: 0 0 4 4;
-  padding: 10px 12px;
+.x-spreadsheet-toast-header {
+  color: #F2711C;
+}
+.x-spreadsheet-modal-header {
+  border-bottom: 1px solid #e0e2e4;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 1.0785em;
+}
+.x-spreadsheet-modal-header,
+.x-spreadsheet-modal-content,
+.x-spreadsheet-toast-header,
+.x-spreadsheet-toast-content {
+  padding: 0.75em 1em;
 }
 @media screen and (min-width: 320px) and (max-width: 480px) {
   .x-spreadsheet-toolbar {

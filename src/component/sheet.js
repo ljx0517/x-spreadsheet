@@ -9,7 +9,7 @@ import ContextMenu from './contextmenu';
 import Table from './table';
 import Toolbar from './toolbar';
 import ModalValidation from './modal_validation';
-// import { xalert } from './message';
+import { xtoast } from './message';
 import { cssPrefix } from '../config';
 import { formulas } from '../core/formula';
 
@@ -41,14 +41,14 @@ function scrollbarMove() {
   }
 }
 
-function selectorSet(multiple, ri, ci, indexesUpdated = true) {
+function selectorSet(multiple, ri, ci, indexesUpdated = true, moving = false) {
   if (ri === -1 && ci === -1) return;
   // console.log(multiple, ', ri:', ri, ', ci:', ci);
   const {
     table, selector, toolbar,
   } = this;
   if (multiple) {
-    selector.setEnd(ri, ci);
+    selector.setEnd(ri, ci, moving);
   } else {
     selector.set(ri, ci, indexesUpdated);
   }
@@ -156,7 +156,7 @@ function overlayerTouch(direction, distance) {
   const { verticalScrollbar, horizontalScrollbar } = this;
   const { top } = verticalScrollbar.scroll();
   const { left } = horizontalScrollbar.scroll();
-  // console.log('direction:', direction, ', distance:', distance);
+  // console.log('direction:', direction, ', distance:', distance, left);
   if (direction === 'left' || direction === 'right') {
     horizontalScrollbar.move({ left: left - distance });
   } else if (direction === 'up' || direction === 'down') {
@@ -235,8 +235,9 @@ function cut() {
 
 function paste(what) {
   const { data } = this;
-  data.paste(what);
-  sheetReset.call(this);
+  if (data.paste(what, msg => xtoast('Tip', msg))) {
+    sheetReset.call(this);
+  }
 }
 
 function toolbarChangePaintformatPaste() {
@@ -272,12 +273,13 @@ function overlayerMousedown(evt) {
       if (isAutofillEl) {
         selector.showAutofill(ri, ci);
       } else if (e.buttons === 1 && !e.shiftKey) {
-        selectorSet.call(this, true, ri, ci);
+        selectorSet.call(this, true, ri, ci, true, true);
       }
     }, () => {
       if (isAutofillEl) {
-        data.autofill(selector.arange, 'all');
-        table.render();
+        if (data.autofill(selector.arange, 'all', msg => xtoast('Tip', msg))) {
+          table.render();
+        }
       }
       selector.hideAutofill();
       toolbarChangePaintformatPaste.call(this);
@@ -666,9 +668,9 @@ function sheetInitEvents() {
 
 export default class Sheet {
   constructor(targetEl, data) {
-    const { view } = data.settings;
+    const { view, showToolbar, showContextmenu } = data.settings;
     this.el = h('div', `${cssPrefix}-sheet`);
-    this.toolbar = new Toolbar(data, view.width, !data.settings.showToolbar);
+    this.toolbar = new Toolbar(data, view.width, !showToolbar);
     targetEl.children(this.toolbar.el, this.el);
     this.data = data;
     // table
@@ -688,7 +690,7 @@ export default class Sheet {
     // data validation
     this.modalValidation = new ModalValidation();
     // contextMenu
-    this.contextMenu = new ContextMenu(() => this.getTableOffset());
+    this.contextMenu = new ContextMenu(() => this.getTableOffset(), !showContextmenu);
     // selector
     this.selector = new Selector(data);
     this.overlayerCEl = h('div', `${cssPrefix}-overlayer-content`)

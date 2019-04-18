@@ -8,12 +8,15 @@ branches:
   - master
 
 install:
+ - npm install -g istanbul
  - npm install
 
 before_script:
 
 script:
   - npm run build
+  - npm run test
+  - npm run coverage
 
 after_script:
   - cp ./dist/* ./docs/ -r
